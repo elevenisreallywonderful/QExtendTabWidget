@@ -1,5 +1,9 @@
 HEADERS += \
-    $$PWD/qextendtabwidget.h
+    $$PWD/TabWidget.h \
+    $$PWD/TabBar.h \
+    $$PWD/TabPopup.h
 
 SOURCES += \
-    $$PWD/qextendtabwidget.cpp
+    $$PWD/TabWidget.cpp \
+    $$PWD/TabBar.cpp \
+    $$PWD/TabPopup.cpp
