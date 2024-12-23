@@ -3,6 +3,7 @@
 
 #include <QTabWidget>
 
+class TabPopup;
 class TabWidget : public QTabWidget
 {
     Q_OBJECT

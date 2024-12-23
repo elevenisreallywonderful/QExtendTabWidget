@@ -16,10 +16,10 @@ protected:
 
 signals:
     void dragging(int index, QPoint offset);
+    void dropped(QPoint offset);
 
 private:
     bool theDragPress=false;
-    bool theDragOut=false;
 
     int draggedIndex;
     QPoint mPressedOffset;
