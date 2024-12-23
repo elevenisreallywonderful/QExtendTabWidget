@@ -43,8 +43,7 @@ void TabBar::mouseMoveEvent(QMouseEvent *event)
 
 void TabBar::mouseReleaseEvent(QMouseEvent *event)
 {
+    emit dropped(QCursor::pos());
     QTabBar::mouseReleaseEvent(event);
     theDragPress=false;
-    theDragOut=false;
-    qDebug() << "release";
 }
