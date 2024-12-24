@@ -74,7 +74,7 @@ int TabWidget::calcPos(QPoint pt)
         return -1;
     }
 }
-#include <QDebug>
+
 void TabWidget::draggingTabBar(int i, QPoint offset)
 {
     if (!tabBar()->tabRect(i).contains(tabBar()->mapFromGlobal(QCursor::pos()))) {
@@ -82,87 +82,64 @@ void TabWidget::draggingTabBar(int i, QPoint offset)
             detachTab(i);
         }
         if (mpLastPopup) {
-            mpLastPopup->move(QCursor::pos() + offset);
+            mpLastPopup->move(QCursor::pos() + QPoint(-10, 0) +  offset);
         }
     }
 }
 
 void TabWidget::draggingPopup(QPoint pt)
 {
-    try {
-        qDebug("1");
-        if (!mpLastPopup) {
-            return;
-        }
-        qDebug("q");
-        if (tabBar()->contentsRect().contains(tabBar()->mapFromGlobal(pt))) {
-            mpLastPopup->setWindowOpacity(0.5);
-             qDebug("w");
-            int i = calcPos(pt);
-            if (mnLastPos == -1) {
-                qDebug("e");
-                if (mpLastPopup->windowTitle().isEmpty()) {
-                    qDebug("r");
-                    return;
-                }
-                mnLastPos = tabBar()->insertTab(i, mpLastPopup->windowTitle());
-                qDebug("t");
-            } else {
-                qDebug("y");
-                if (mnLastPos != i) {
-                    qDebug("2");
-                    tabBar()->removeTab(mnLastPos);
-                    qDebug("3");
-                    mnLastPos = tabBar()->insertTab(i, mpLastPopup->windowTitle());
-                    qDebug("4");
-                }
+    if (!mpLastPopup) {
+        return;
+    }
+    if (tabBar()->contentsRect().contains(tabBar()->mapFromGlobal(pt))) {
+        mpLastPopup->setWindowOpacity(0.5);
+        int i = calcPos(pt);
+        if (mnLastPos == -1) {
+            if (mpLastPopup->windowTitle().isEmpty()) {
+                return;
             }
+
+            mnLastPos = insertTab(i, new QWidget(), mpLastPopup->windowTitle());
+            tabBar()->setCurrentIndex(mnLastPos);
         } else {
-            qDebug("6");
-            if (!mpLastPopup) return;
-            mpLastPopup->setWindowOpacity(1);
-
-            if (mnLastPos != -1) {
-                qDebug("7");
-                tabBar()->removeTab(mnLastPos);
-                qDebug("8");
-                mnLastPos = -1;
-                qDebug("8");
+            if (mnLastPos != i) {
+                removeTab(mnLastPos);
+                mnLastPos = insertTab(i, new QWidget(), mpLastPopup->windowTitle());
+                tabBar()->setCurrentIndex(mnLastPos);
             }
         }
-    }  catch (...) {
+    } else {
+        if (!mpLastPopup) return;
+        mpLastPopup->setWindowOpacity(1);
 
+        if (mnLastPos != -1) {
+            removeTab(mnLastPos);
+            mnLastPos = -1;
+        }
     }
 
 }
 
 void TabWidget::dropPopup(QPoint pt)
 {
-    qDebug("z");
     if (!mpLastPopup) {
         return;
     }
-    qDebug("x");
     mpLastPopup->setWindowOpacity(1);
 
     if (mnLastPos != -1) {
-        qDebug("c");
-        tabBar()->removeTab(mnLastPos);
+        removeTab(mnLastPos);
         mnLastPos = -1;
     }
-    qDebug("v");
     QWidget *widget = mpLastPopup->contentWidget();
     if (!widget) {
         return;
     }
-    qDebug("b");
-    qDebug() << pt;
     int i = calcPos(pt);
     if (i < 0) return;
-    qDebug("n");
     insertTab(i, widget, mpLastPopup->windowIcon(), mpLastPopup->windowTitle());
     setCurrentIndex(i);
-    qDebug("m");
     delete mpLastPopup;
     mpLastPopup = nullptr;
 }

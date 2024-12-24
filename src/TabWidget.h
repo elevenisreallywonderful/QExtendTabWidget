@@ -19,8 +19,6 @@ private:
     TabPopup* mpLastPopup;
     int mnLastPos;
 
-    
-
 private slots:
     void draggingTabBar(int i, QPoint);
     void draggingPopup(QPoint);
